@@ -1,0 +1,70 @@
+{ lib
+, config
+, pkgs
+, ...
+}:
+let
+  cfg = config.services.jlu-netauth;
+in
+{
+  options.services.jlu-netauth = {
+    enable = lib.mkEnableOption "NetAuthentication service for JiLin University";
+
+    package = lib.mkOption {
+      type = lib.types.package;
+      default = pkgs.callPackage ./package.nix {
+        hostname = "${config.networking.hostName}";
+        debug = false;
+      };
+    };
+
+    configFile = lib.mkOption {
+      type = lib.types.nullOr lib.types.path;
+      description = "login credential file to use.";
+    };
+  };
+  config = lib.mkIf cfg.enable {
+    systemd.services."jlu-netauth" = {
+      description = "NetAuthentication service for JiLin University";
+      requires = [ "network-online.target" ];
+      after = [ "network-online.target" ];
+      wantedBy = [ "multi-user.target" ];
+      serviceConfig = {
+        ExecStart = lib.getExe cfg.package;
+
+        DynamicUser = true;
+        StateDirectory = "jlu_netauth";
+        EnvironmentFile = "${cfg.configFile}";
+
+        ### Hardening
+        AmbientCapabilities = "";
+        CapabilityBoundingSet = "";
+        DeviceAllow = "";
+        LockPersonality = true;
+        MemoryDenyWriteExecute = true;
+        NoNewPrivileges = true;
+        PrivateDevices = true;
+        PrivateMounts = true;
+        PrivateTmp = true;
+        PrivateUsers = true;
+        ProcSubset = "pid";
+        ProtectClock = true;
+        ProtectControlGroups = true;
+        ProtectHome = true;
+        ProtectHostname = true;
+        ProtectKernelLogs = true;
+        ProtectKernelModules = true;
+        ProtectKernelTunables = true;
+        ProtectProc = "invisible";
+        ProtectSystem = "strict";
+        RestrictRealtime = true;
+        RestrictSUIDSGID = true;
+        RestrictNamespaces = true;
+        RestrictAddressFamilies = "AF_INET AF_INET6";
+        SystemCallArchitectures = "native";
+        SystemCallFilter = "@system-service bpf";
+        UMask = "0077";
+      };
+    };
+  };
+}
