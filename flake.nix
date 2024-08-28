@@ -1,5 +1,5 @@
 {
-  description = "";
+  description = "NetAuthentication service for JiLin University";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
