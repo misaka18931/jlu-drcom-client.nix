@@ -1,7 +1,7 @@
 CC=gcc
 CFLAGS=-I. -Wall -lpthread
-DEPS=config.h client.h encryption.h md5.h logger.h resend.h debug_utils
-OBJS=main.o client.o encryption.o md5.o logger.o resend.o debug_utils.o
+DEPS=config.h client.h encryption.h md5.h logger.h resend.h debug_utils env.h
+OBJS=main.o client.o encryption.o md5.o logger.o resend.o debug_utils.o env.o
 TARGET=drclient_jlu
 
 # object: dependence

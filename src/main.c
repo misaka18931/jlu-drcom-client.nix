@@ -2,6 +2,7 @@
 #include "client.h"
 #include "logger.h"
 #include "resend.h"
+#include "env.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -9,20 +10,22 @@
 #include <signal.h>
 Client client;
 Logger logger;
+Credential cred;
 void handler_SIGINT(int signum)
 {
     client_challenge_logout(&client, CONFIG_AUTH_VERSION, &logger);
-    client_logout(&client, CONFIG_USERNAME, CONFIG_PASSWORD, CONFIG_MAC, CONFIG_AUTH_VERSION, CONFIG_CONTROL_CHECK_STATUS, CONFIG_ADAPTER_NUM, &logger);
+    client_logout(&client, cred.username, cred.passwd, cred.hw_addr, CONFIG_AUTH_VERSION, CONFIG_CONTROL_CHECK_STATUS, CONFIG_ADAPTER_NUM, &logger);
 }
 int main(int argc, char const *argv[])
 {
     srand(time(NULL));
+    get_credential(&cred);
     client_init(&client);
     logger_init(&logger);
     client_connect(&client, CONFIG_CLIENT_IP, CONFIG_CLIENT_PORT, CONFIG_SERVER_IP, CONFIG_SERVER_PORT);
     client_challenge_login(&client, CONFIG_AUTH_VERSION, &logger);
     client_login(&client,
-                 CONFIG_USERNAME, CONFIG_PASSWORD, CONFIG_IP, CONFIG_MAC, CONFIG_HOST_NAME, CONFIG_OS_INFO, CONFIG_PRIMARY_DNS, CONFIG_DHCP_SERVER,
+                 cred.username, cred.passwd, cred.ip_addr, cred.hw_addr, CONFIG_HOST_NAME, CONFIG_OS_INFO, CONFIG_PRIMARY_DNS, CONFIG_DHCP_SERVER,
                  CONFIG_AUTH_VERSION, CONFIG_CONTROL_CHECK_STATUS, CONFIG_ADAPTER_NUM, CONFIG_IP_DOG, &logger);
     signal(SIGINT, handler_SIGINT);
     pthread_t thread_keep_alive_auth, thread_keep_alive_heart_beat, thread_resend_keep_alive_auth, thread_resend_keep_alive_heart_beat;
@@ -39,7 +42,7 @@ int main(int argc, char const *argv[])
         CONFIG_KEEP_ALIVE_HEART_BEAT_VERSION,
         CONFIG_KEEP_ALIVE_FIRST_HEART_BEAT_VERSION,
         CONFIG_KEEP_ALIVE_EXTRA_HEART_BEAT_VERSION,
-        CONFIG_IP,
+        cred.ip_addr,
         &logger};
     if (pthread_create(&thread_keep_alive_heart_beat, NULL, client_run_keep_alive_heart_beat, &arg_keep_alive_heart_beat) != 0)
     {

@@ -4,17 +4,13 @@
 /**
  * set to 1 if you want to see the log in console
  */
-#define CONFIG_DEBUG 1
+#define CONFIG_DEBUG {DEBUG}
 
 /**
  * user info
  */
-#define CONFIG_USERNAME "xiaoming22"
-#define CONFIG_PASSWORD "xiaoming123456"
-#define CONFIG_IP "192.168.1.100"
-#define CONFIG_MAC "\x00\x00\x00\x00\x00\x00"
-#define CONFIG_HOST_NAME "xiaoming-linux"
-#define CONFIG_OS_INFO "5.10.0-amd64" // obtained by `uname -r` on linux
+#define CONFIG_HOST_NAME "{HOSTNAME}"
+#define CONFIG_OS_INFO "{OSINFO}" // obtained by `uname -r` on linux
 // the following is not required in JLU
 #define CONFIG_PRIMARY_DNS "0.0.0.0"
 #define CONFIG_DHCP_SERVER "0.0.0.0"
