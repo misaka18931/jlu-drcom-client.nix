@@ -2,9 +2,12 @@
 
 Net Authentication Client for JiLin University as a NixOS module.
 
-ported from `github:AndrewLawrence80/jlu-drcom-client`
+ported from `github:AndrewLawrence80/jlu-drcom-client`.
 
 ## Usage
+
+Detailed Usage documentation is coming soon...
+*it really is comming soon, be assured :)*
 
 Credentials are passed to the program by systemd's `EnvironmentFile`.
 
@@ -18,3 +21,5 @@ JLU_HWADDR=your MAC address registered in ip.jlu.edu.cn
 ```
 **DO NOT** put your plaintext credentials directly into `services.jlu-drcom-client.configFile`, as they will end up in the world readable `/nix/store`.
 Instead, use a secret management scheme like `sops-nix`.
+
+Thanks @AndrewLawrence80 for amazing [repository](https://github.com/AndrewLawrence80/jlu-drcom-client).
