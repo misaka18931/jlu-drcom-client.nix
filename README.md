@@ -6,12 +6,39 @@ ported from `github:AndrewLawrence80/jlu-drcom-client`.
 
 ## Usage
 
-Detailed Usage documentation is coming soon...
-*it really is comming soon, be assured :)*
+### for Flakes users
+
+```nix
+{
+    inputs = {
+        drcom.url = "github:misaka18931/jlu-drcom-client.nix";
+        drcom.inputs.nixpkgs.follows = "nixpkgs";
+        ...
+    };
+    outputs = { drcom, ... }:
+    {
+        nixosConfigurations."yourHostname" = nixpkgs.lib.nixosSystem {
+            modules = [
+                drcom.nixosModules.default
+                {
+                    enable = true;
+                    configFile = "/path/to/config";
+                }
+            ];
+            ...
+        };
+    }
+}
+```
+
+### for non-Flake users
+
+not tested yet.
+
+### Configuration
 
 Credentials are passed to the program by systemd's `EnvironmentFile`.
 
-### configuration file format
 ```
 # path/to/config
 JLU_USERNAME=your username at mails.jlu.edu.cn
