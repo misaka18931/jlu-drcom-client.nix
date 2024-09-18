@@ -24,46 +24,63 @@ in
     };
   };
   config = lib.mkIf cfg.enable {
-    systemd.services."jlu-netauth" = {
-      description = "NetAuthentication service for JiLin University";
-      requires = [ "network-online.target" ];
-      after = [ "network-online.target" ];
-      wantedBy = [ "multi-user.target" ];
-      serviceConfig = {
-        ExecStart = lib.getExe cfg.package;
+    systemd.services = {
+      "jlu-netauth" = {
+        description = "NetAuthentication service for JiLin University";
+        requires = [ "network-online.target" ];
+        after = [ "network-online.target" ];
+        wantedBy = [ "multi-user.target" ];
+        serviceConfig = {
+          ExecStart = lib.getExe cfg.package;
 
-        DynamicUser = true;
-        StateDirectory = "jlu_netauth";
-        EnvironmentFile = "${cfg.configFile}";
+          DynamicUser = true;
+          StateDirectory = "jlu_netauth";
+          EnvironmentFile = "${cfg.configFile}";
 
-        ### Hardening
-        AmbientCapabilities = "";
-        CapabilityBoundingSet = "";
-        DeviceAllow = "";
-        LockPersonality = true;
-        MemoryDenyWriteExecute = true;
-        NoNewPrivileges = true;
-        PrivateDevices = true;
-        PrivateMounts = true;
-        PrivateTmp = true;
-        PrivateUsers = true;
-        ProcSubset = "pid";
-        ProtectClock = true;
-        ProtectControlGroups = true;
-        ProtectHome = true;
-        ProtectHostname = true;
-        ProtectKernelLogs = true;
-        ProtectKernelModules = true;
-        ProtectKernelTunables = true;
-        ProtectProc = "invisible";
-        ProtectSystem = "strict";
-        RestrictRealtime = true;
-        RestrictSUIDSGID = true;
-        RestrictNamespaces = true;
-        RestrictAddressFamilies = "AF_INET AF_INET6";
-        SystemCallArchitectures = "native";
-        SystemCallFilter = "@system-service bpf";
-        UMask = "0077";
+          ### Hardening
+          AmbientCapabilities = "";
+          CapabilityBoundingSet = "";
+          DeviceAllow = "";
+          LockPersonality = true;
+          MemoryDenyWriteExecute = true;
+          NoNewPrivileges = true;
+          PrivateDevices = true;
+          PrivateMounts = true;
+          PrivateTmp = true;
+          PrivateUsers = true;
+          ProcSubset = "pid";
+          ProtectClock = true;
+          ProtectControlGroups = true;
+          ProtectHome = true;
+          ProtectHostname = true;
+          ProtectKernelLogs = true;
+          ProtectKernelModules = true;
+          ProtectKernelTunables = true;
+          ProtectProc = "invisible";
+          ProtectSystem = "strict";
+          RestrictRealtime = true;
+          RestrictSUIDSGID = true;
+          RestrictNamespaces = true;
+          RestrictAddressFamilies = "AF_INET AF_INET6";
+          SystemCallArchitectures = "native";
+          SystemCallFilter = "@system-service bpf";
+          UMask = "0077";
+        };
+      };
+
+      "jlu-netauth-autorestart" = {
+        description = "Auto restart jlu-netauth service on resume.";
+        before = [ "sleep.target" ];
+        wantedBy = [ "sleep.target" ];
+        unitConfig = {
+          StopWhenUnneeded = true;
+        };
+        serviceConfig = {
+          Type = "oneshot";
+          RemainAfterExit = "yes";
+          ExecStart = "${pkgs.systemd}/bin/systemctl stop jlu-netauth";
+          ExecStop = "${pkgs.systemd}/bin/systemctl start jlu-netauth";
+        };
       };
     };
   };
