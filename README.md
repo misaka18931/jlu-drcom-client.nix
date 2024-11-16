@@ -24,7 +24,8 @@ ported from `github:AndrewLawrence80/jlu-drcom-client`.
                     services.jlu-netauth = {
                         enable = true;
                         configFile = "/path/to/config";
-                    }
+                        healthcheckInterval = 10; # check connectivity every 10 seconds
+                    };
                 }
             ];
             ...
