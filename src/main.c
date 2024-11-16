@@ -11,7 +11,7 @@
 Client client;
 Logger logger;
 Credential cred;
-void handler_SIGINT(int signum)
+void drcom_logout(int signum)
 {
     client_challenge_logout(&client, CONFIG_AUTH_VERSION, &logger);
     client_logout(&client, cred.username, cred.passwd, cred.hw_addr, CONFIG_AUTH_VERSION, CONFIG_CONTROL_CHECK_STATUS, CONFIG_ADAPTER_NUM, &logger);
@@ -27,7 +27,8 @@ int main(int argc, char const *argv[])
     client_login(&client,
                  cred.username, cred.passwd, cred.ip_addr, cred.hw_addr, CONFIG_HOST_NAME, CONFIG_OS_INFO, CONFIG_PRIMARY_DNS, CONFIG_DHCP_SERVER,
                  CONFIG_AUTH_VERSION, CONFIG_CONTROL_CHECK_STATUS, CONFIG_ADAPTER_NUM, CONFIG_IP_DOG, &logger);
-    signal(SIGINT, handler_SIGINT);
+    signal(SIGINT, drcom_logout);
+    signal(SIGTERM, drcom_logout);
     pthread_t thread_keep_alive_auth, thread_keep_alive_heart_beat, thread_resend_keep_alive_auth, thread_resend_keep_alive_heart_beat;
     ARG_KeepAliveAuth arg_keep_alive_auth = {
         &client,

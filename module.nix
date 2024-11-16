@@ -1,7 +1,8 @@
-{ lib
-, config
-, pkgs
-, ...
+{
+  lib,
+  config,
+  pkgs,
+  ...
 }:
 let
   cfg = config.services.jlu-netauth;
@@ -67,7 +68,22 @@ in
           UMask = "0077";
         };
       };
+      "jlu-netauth-monitor" = let 
+        healthCheckScript = pkgs.writeScript "jlu-netauth-monitor" ''
+        #!/bin/sh
+        while true; do
+          sleep 10
+          ${pkgs.curl}/bin/curl -s "10.100.61.3" | grep -q 'login.jlu.edu.cn' && ${pkgs.systemd}/bin/systemctl restart jlu-netauth
+        done
+        '';
+      in {
+        description = "health check for jlu-netauth service.";
+        wantedBy = [ "jlu-netauth.service" ];
 
+        serviceConfig = {
+          ExecStart = "${healthCheckScript}";
+        };
+      };
       "jlu-netauth-autorestart" = {
         description = "Auto restart jlu-netauth service on resume.";
         before = [ "sleep.target" ];
