@@ -23,6 +23,12 @@ in
       type = lib.types.nullOr lib.types.path;
       description = "login credential file to use.";
     };
+
+    healthcheckInterval = lib.mkOption {
+      type = lib.types.int;
+      default = 10;
+      description = "authentication health-check interval (in seconds).";
+    };
   };
   config = lib.mkIf cfg.enable {
     systemd.services = {
@@ -72,7 +78,7 @@ in
         healthCheckScript = pkgs.writeScript "jlu-netauth-monitor" ''
         #!/bin/sh
         while true; do
-          sleep 10
+          sleep ${toString cfg.healthcheckInterval}
           ${pkgs.curl}/bin/curl -s "10.100.61.3" | grep -q 'login.jlu.edu.cn' && ${pkgs.systemd}/bin/systemctl restart jlu-netauth
         done
         '';
