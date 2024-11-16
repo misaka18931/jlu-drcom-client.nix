@@ -1,6 +1,5 @@
 #include "client.h"
 #include "encryption.h"
-#include "debug_utils.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -453,10 +452,10 @@ void client_keep_alive_heart_beat(Client *client_this,
 
     // random number 4 bit
     unsigned char random_token[4] = {0};
-    random_token[8] = rand() % 0xff;
-    random_token[9] = rand() % 0xff;
-    random_token[10] = rand() % 0xff;
-    random_token[11] = rand() % 0xff;
+    random_token[0] = rand() % 0xff;
+    random_token[1] = rand() % 0xff;
+    random_token[2] = rand() % 0xff;
+    random_token[3] = rand() % 0xff;
     memcpy(buffer_send + 8, random_token, 4); // [8:12)
 
     // 0x00 4 bit, nothing to do
