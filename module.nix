@@ -79,7 +79,7 @@ in
         #!/bin/sh
         while true; do
           sleep ${toString cfg.healthcheckInterval}
-          ${pkgs.curl}/bin/curl -s "10.100.61.3" | grep -q 'login.jlu.edu.cn' && ${pkgs.systemd}/bin/systemctl restart jlu-netauth
+          timeout 1 sh -c '${pkgs.curl}/bin/curl -s "10.100.61.3" | grep -q "login.jlu.edu.cn" && ${pkgs.systemd}/bin/systemctl restart jlu-netauth'
         done
         '';
       in {
