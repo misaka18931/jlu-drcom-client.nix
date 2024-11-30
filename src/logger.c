@@ -25,39 +25,34 @@ void logger_init(Logger *logger_this)
 }
 void logger_log_challenge_send(unsigned char *buffer_send)
 {
-    if (CONFIG_DEBUG)
-    {
+#if CONFIG_DEBUG
         debug_msg("send challenge msg to server", buffer_send, CONFIG_SIZE_CHALLENGE);
-    }
+#endif
 }
 void logger_log_challenge_receive(unsigned char *buffer_receive, unsigned long size)
 {
-    if (CONFIG_DEBUG)
-    {
+#if CONFIG_DEBUG
         debug_msg("receive challenge msg from server", buffer_receive, size);
         debug_msg("login salt", buffer_receive + 4, CONFIG_SIZE_SALT);
-    }
+#endif
 }
 void logger_log_auth_send(unsigned char *buffer_send, unsigned long size)
 {
-    if (CONFIG_DEBUG)
-    {
+#if CONFIG_DEBUG
         debug_msg("send auth msg to server", buffer_send, size);
-    }
+#endif
 }
 void logger_log_auth_receive(unsigned char *buffer_receive, unsigned long size)
 {
-    if (CONFIG_DEBUG)
-    {
+#if CONFIG_DEBUG
         debug_msg("receive auth msg from server", buffer_receive, size);
-    }
+#endif
 }
 void logger_log_keep_alive_auth_send(Logger *logger_this, unsigned char *buffer_send)
 {
-    if (CONFIG_DEBUG)
-    {
+#if CONFIG_DEBUG
         debug_msg("send keep alive auth msg to server", buffer_send, CONFIG_SIZE_KEEP_ALIVE_AUTH);
-    }
+#endif
     logger_try_lock_mutex_keep_alive_auth_send(logger_this);
     memcpy(logger_this->keep_alive_auth_send, buffer_send, CONFIG_SIZE_KEEP_ALIVE_AUTH);
     logger_this->time_keep_alive_auth_send = time(NULL);
@@ -66,10 +61,9 @@ void logger_log_keep_alive_auth_send(Logger *logger_this, unsigned char *buffer_
 }
 void logger_log_keep_alive_auth_receive(Logger *logger_this, unsigned char *buffer_receive, unsigned long size)
 {
-    if (CONFIG_DEBUG)
-    {
+#if CONFIG_DEBUG
         debug_msg("receive keep alive auth msg from server", buffer_receive, size);
-    }
+#endif
     logger_try_lock_mutex_keep_alive_auth_receive(logger_this);
     logger_this->time_keep_alive_auth_receive = time(NULL);
     ++(logger_this->count_keep_alive_auth_receive);
@@ -77,10 +71,9 @@ void logger_log_keep_alive_auth_receive(Logger *logger_this, unsigned char *buff
 }
 void logger_log_keep_alive_heart_beat_send(Logger *logger_this, unsigned char *buffer_send)
 {
-    if (CONFIG_DEBUG)
-    {
+#if CONFIG_DEBUG
         debug_msg("send keep alive heart beat msg to server", buffer_send, CONFIG_SIZE_KEEP_ALIVE_HEART_BEAT);
-    }
+#endif
     logger_try_lock_mutex_keep_alive_heart_beat_send(logger_this);
     memcpy(logger_this->keep_alive_heart_beat_send, buffer_send, CONFIG_SIZE_KEEP_ALIVE_HEART_BEAT);
     logger_this->time_keep_alive_heart_beat_send = time(NULL);
@@ -89,10 +82,9 @@ void logger_log_keep_alive_heart_beat_send(Logger *logger_this, unsigned char *b
 }
 void logger_log_keep_alive_heart_beat_receive(Logger *logger_this, unsigned char *buffer_receive, unsigned long size)
 {
-    if (CONFIG_DEBUG)
-    {
+#if CONFIG_DEBUG
         debug_msg("receive keep alive heart beat msg from server", buffer_receive, size);
-    }
+#endif
     logger_try_lock_mutex_keep_alive_heart_beat_receive(logger_this);
     logger_this->time_keep_alive_heart_beat_receive = time(NULL);
     ++(logger_this->count_keep_alive_heart_beat_receive);
@@ -100,17 +92,15 @@ void logger_log_keep_alive_heart_beat_receive(Logger *logger_this, unsigned char
 }
 void logger_log_logout_send(unsigned char *buffer_send)
 {
-    if (CONFIG_DEBUG)
-    {
+#if CONFIG_DEBUG
         debug_msg("send logout msg to server", buffer_send, CONFIG_SIZE_LOGOUT);
-    }
+#endif
 }
 void logger_log_logout_receive(unsigned char *buffer_receive, unsigned long size)
 {
-    if (CONFIG_DEBUG)
-    {
+#if CONFIG_DEBUG
         debug_msg("receive logout msg from server", buffer_receive, size);
-    }
+#endif
 }
 
 void logger_try_lock_mutex_keep_alive_auth_send(Logger *logger_this)

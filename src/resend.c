@@ -19,21 +19,19 @@ void resend_keep_alive_auth_check_and_resend(Client *client, Logger *logger)
     count_keep_alive_auth_receive = logger->count_keep_alive_auth_receive;
     logger_unlock_mutex_keep_alive_auth_receive(logger);
 
-    if (CONFIG_DEBUG)
-    {
+#if CONFIG_DEBUG
         printf("count_keep_alive_auth_send = %ld\n", count_keep_alive_auth_send);
         printf("count_keep_alive_auth_receive = %ld\n", count_keep_alive_auth_receive);
-    }
+#endif
 
     int count_retry_keep_alive_auth = 0;
     while (count_keep_alive_auth_send > count_keep_alive_auth_receive && time(NULL) - time_keep_alive_auth_send > 2 && count_retry_keep_alive_auth < 3)
     {
         socklen_t socklen_server_sockaddr = (socklen_t)sizeof(client->server_sockaddr);
         ssize_t size_send = -1;
-        if (CONFIG_DEBUG)
-        {
+#if CONFIG_DEBUG
             debug_msg("resend keep alive auth to server", logger->keep_alive_auth_send, CONFIG_SIZE_KEEP_ALIVE_AUTH);
-        }
+#endif
         size_send = sendto(client->client_sockfd, logger->keep_alive_auth_send, CONFIG_SIZE_KEEP_ALIVE_AUTH, 0, (const struct sockaddr *)&(client->server_sockaddr), socklen_server_sockaddr);
         if (size_send < 0)
         {
@@ -74,21 +72,19 @@ void resend_keep_alive_heart_beat_check_and_resend(Client *client, Logger *logge
     count_keep_alive_heart_beat_receive = logger->count_keep_alive_heart_beat_receive;
     logger_unlock_mutex_keep_alive_heart_beat_receive(logger);
 
-    if (CONFIG_DEBUG)
-    {
+#if CONFIG_DEBUG
         printf("count_keep_alive_heart_beat_send = %ld\n", count_keep_alive_heart_beat_send);
         printf("count_keep_alive_heart_beat_receive = %ld\n", count_keep_alive_heart_beat_receive);
-    }
+#endif
 
     int count_retry_keep_alive_heart_beat = 0;
     while (count_keep_alive_heart_beat_send > count_keep_alive_heart_beat_receive && time(NULL) - time_keep_alive_heart_beat_send > 2 && count_retry_keep_alive_heart_beat < 3)
     {
         socklen_t socklen_server_sockaddr = (socklen_t)sizeof(client->server_sockaddr);
         ssize_t size_send = -1;
-        if (CONFIG_DEBUG)
-        {
+#if CONFIG_DEBUG
             debug_msg("resend keep alive heartbeat to server", logger->keep_alive_heart_beat_send,CONFIG_SIZE_KEEP_ALIVE_HEART_BEAT);
-        }
+#endif
         size_send = sendto(client->client_sockfd, logger->keep_alive_heart_beat_send, CONFIG_SIZE_KEEP_ALIVE_HEART_BEAT, 0, (const struct sockaddr *)&(client->server_sockaddr), socklen_server_sockaddr);
         if (size_send < 0)
         {
@@ -120,10 +116,9 @@ void *resend_run_keep_alive_auth_check_and_resend(void *args)
     long count_turn = 0;
     while (1)
     {
-        if (CONFIG_DEBUG)
-        {
+#if CONFIG_DEBUG
             printf("count of keep alive auth at turn %ld\n", count_turn);
-        }
+#endif
         resend_keep_alive_auth_check_and_resend(arg_resend->client, arg_resend->logger);
         sleep(1);
         ++count_turn;
@@ -135,10 +130,9 @@ void *resend_run_keep_alive_heart_beat_check_and_resend(void *args)
     long count_turn = 0;
     while (1)
     {
-        if (CONFIG_DEBUG)
-        {
+#if CONFIG_DEBUG
             printf("count of keep alive heart beat at turn %ld\n", count_turn);
-        }
+#endif
         resend_keep_alive_heart_beat_check_and_resend(arg_resend->client, arg_resend->logger);
         sleep(1);
         ++count_turn;
